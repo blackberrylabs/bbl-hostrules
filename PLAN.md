@@ -17,4 +17,6 @@
 ## Etape 4. Version 0.2.0 — extension par hote
 - [x] `HostRule<X, H = NoExt>` + `HostExtension` ; MCProster verifie inchange (compile contre 0.2.0) — 2026-10-16
 - [x] 23 tests, clippy propre — 2026-10-16
-- [ ] Commit 2, push, tag v0.2.0 — sur accord
+- [x] Commit 2, push, tag v0.2.0 — 2026-10-16
+
+## Etape 5. crates.io — a decider (condition remplie : deux outils, API tenue)

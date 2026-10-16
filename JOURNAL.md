@@ -3,6 +3,12 @@
 
 ---
 
+## 2026-10-16, deux consommateurs
+
+- Permitt 0.1.0 publie sur hostrules 0.2.0 (`HostRule<PermLocation, PermHost>`), MCProster 0.2.1 sur
+  0.1.0. La condition posee dans le BRIEF pour crates.io — deux outils, une version d'API
+  tenue — est remplie ; publication a decider.
+
 ## 2026-10-16, 0.2.0 le soir meme
 
 - Permitt (schema des regles D11) a besoin de champs par hote — defauts, sens des reglages,
