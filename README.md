@@ -1,9 +1,9 @@
-# hostrules
+# bbl-hostrules
 
 **Where each AI assistant keeps its files on a machine, and how to read them without
 writing — with the source of every claim.**
 
-`hostrules` is the Rust crate shared by the [Blackberrylabs](https://github.com/blackberrylabs)
+`bbl-hostrules` is the Rust crate shared by the [Blackberrylabs](https://github.com/blackberrylabs)
 tools — [MCProster](https://github.com/blackberrylabs/mcproster) (inventory of MCP
 servers) and Permitt (inventory of agent permissions). Each tool ships its own rule files;
 this crate owns what they have in common.
@@ -64,11 +64,11 @@ quote = "the words the path and key were read from"
 
 ```toml
 [dependencies]
-hostrules = { git = "https://github.com/blackberrylabs/hostrules", tag = "v0.2.0" }
+bbl-hostrules = { git = "https://github.com/blackberrylabs/bbl-hostrules", tag = "v0.3.0" }
 ```
 
 ```rust
-use hostrules::{Extension, Location, Rules};
+use bbl_hostrules::{Extension, Location, Rules};
 
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
 struct MyLocation { servers_key: String }
@@ -81,11 +81,11 @@ impl Extension for MyLocation {
 }
 
 let rules: Rules<MyLocation> = Rules::load([("codex.toml", include_str!("../hosts/codex.toml"))])?;
-let env = hostrules::Env::current();
-let roots = hostrules::resolve::project_roots(&env);
+let env = bbl_hostrules::Env::current();
+let roots = bbl_hostrules::resolve::project_roots(&env);
 for host in &rules.hosts {
     for loc in &host.locations {
-        for file in hostrules::resolve::resolve(loc, &env, &roots) {
+        for file in bbl_hostrules::resolve::resolve(loc, &env, &roots) {
             // read_tree(&file.path, loc.format) → serde_json::Value
         }
     }

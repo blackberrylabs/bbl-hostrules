@@ -1,5 +1,17 @@
-# JOURNAL — hostrules
+# JOURNAL — bbl-hostrules
 <!-- Project journal (French), newest first. -->
+
+---
+
+## 2026-10-16, tard — bbl-hostrules
+
+- Question d'Alexandre apres la naissance de `bbl-report` : « pour faire propre, on aurait pu
+  mettre bbl-hostrules aussi ? ». Recommandation de garder `hostrules` (nom du metier, crate
+  utilisable seule) ; il tranche l'inverse : « Je veux ca : bbl-hostrules ». Regularite de la
+  famille d'abord — et c'est le moment ou ca ne coute rien (deux consommateurs, tous a nous,
+  pas encore sur crates.io).
+- 0.3.0 : seul le nom change (`use bbl_hostrules::…`). Dossier local renomme, depot renomme
+  sur GitHub par Alexandre, Permitt et MCProster migrent dans la foulee.
 
 ---
 

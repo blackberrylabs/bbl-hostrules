@@ -1,7 +1,7 @@
-# CLAUDE.md — hostrules
+# CLAUDE.md — bbl-hostrules
 <!-- Working rules for Claude in this repository (French). Code and docs are in English. -->
 
-`hostrules` : crate Rust commune aux outils Blackberrylabs (MCProster, Permitt) — regles
+`bbl-hostrules` (`use bbl_hostrules::…`) : crate Rust commune aux outils Blackberrylabs (MCProster, Permitt) — regles
 d'hotes sourcees, environnement, lecteurs JSON/JSONC/TOML/YAML, masquage des secrets,
 resolution d'emplacements. Lecture seule, aucun reseau, aucune interface.
 
@@ -12,7 +12,7 @@ resolution d'emplacements. Lecture seule, aucun reseau, aucune interface.
 - Un changement d'API se verifie sur les deux outils (MCProster : 33 tests et `--json`
   identique) avant d'etre commite.
 - Commits locaux libres ; `git push`, suppression de fichiers, tags : accord explicite.
-  Commandes completes, chemin absolu (`cd /home/nushoko/Bureau/Logiciels/Hostrules && …`).
+  Commandes completes, chemin absolu (`cd /home/nushoko/Bureau/Logiciels/Bbl_hostrules && …`).
 - Anglais : code, commentaires, commits, README. Francais : pilotage.
 - Seul nom cite : Alexandre Do.
 

@@ -1,4 +1,4 @@
-# BRIEF — hostrules
+# BRIEF — bbl-hostrules (ne `hostrules`)
 <!-- Project brief (French). Code, comments, commits and README are in English. -->
 
 Rev. 1 — 2026-10-16. Decision D6 de Permitt : le troisieme outil extrait le coeur commun.
@@ -6,7 +6,7 @@ Rev. 1 — 2026-10-16. Decision D6 de Permitt : le troisieme outil extrait le co
 
 ## 1. Objet
 
-**`hostrules` : une crate Rust qui sait ou chaque assistant IA range ses fichiers sur une
+**`bbl-hostrules` (jusqu'au 16/10 au soir : `hostrules`) : une crate Rust qui sait ou chaque assistant IA range ses fichiers sur une
 machine, et comment les lire sans rien ecrire — avec la source de chaque affirmation.**
 
 Une regle d'hote = un fichier TOML : identite de l'hote, emplacements par OS et par portee
@@ -85,3 +85,8 @@ publication crates.io en 0.1.
   separes : un seul validateur de sources, un seul chargeur, chaque outil son extension.
 
 - **H3 2026-10-16** — `resolve` (emplacements → fichiers concrets) dans la crate.
+- **H4 2026-10-16** — Renommee **`bbl-hostrules`** (« Je veux ca : bbl-hostrules »). Regle posee
+  dans `00_moi/CONVENTIONS.md` : toute fondation commune de la famille porte le prefixe
+  `bbl-` (`bbl-hostrules`, `bbl-ui`, `bbl-report`) ; les outils gardent leur nom propre.
+  Depot renomme sur GitHub (l'ancienne adresse redirige), dossier local `Logiciels/Bbl_hostrules`,
+  version 0.3.0 : seul le nom change.

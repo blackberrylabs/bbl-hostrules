@@ -1,4 +1,4 @@
-//! `hostrules`: where each AI assistant keeps its files on a machine, and how to read them
+//! `bbl-hostrules`: where each AI assistant keeps its files on a machine, and how to read them
 //! without writing — with the source of every claim.
 //!
 //! A *host rule* is a TOML file: the host's identity, the locations of its files per

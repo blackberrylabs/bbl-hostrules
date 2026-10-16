@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.3.0] — 2026-10-16
+
+### Changed
+
+- **Renamed `hostrules` → `bbl-hostrules`** (`use bbl_hostrules::…`), like `bbl-ui` and
+  `bbl-report`: the shared foundations of the Blackberrylabs tools all carry the family
+  prefix. Nothing else changes; the repository moved to
+  `github.com/blackberrylabs/bbl-hostrules` (the old address redirects).
+
 ## [0.2.0] — 2026-10-16
 
 ### Added

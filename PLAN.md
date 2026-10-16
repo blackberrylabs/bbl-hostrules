@@ -1,4 +1,4 @@
-# PLAN — hostrules
+# PLAN — bbl-hostrules
 <!-- Project plan (French). -->
 
 ## Etape 0. Cadrage
@@ -20,3 +20,8 @@
 - [x] Commit 2, push, tag v0.2.0 — 2026-10-16
 
 ## Etape 5. crates.io — a decider (condition remplie : deux outils, API tenue)
+
+## Etape 6. Renommage `bbl-hostrules` (decision H4, 2026-10-16)
+- [x] Dossier local renomme `Bbl_hostrules` — 2026-10-16
+- [ ] Depot GitHub renomme, remote mis a jour, commit 0.3.0, tag v0.3.0
+- [ ] Permitt et MCProster sur `bbl-hostrules` v0.3.0, sorties identiques
