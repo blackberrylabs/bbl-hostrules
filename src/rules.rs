@@ -98,11 +98,21 @@ pub trait Extension: DeserializeOwned + Serialize + Clone + Debug {
     }
 }
 
+/// The fields a tool adds to every host rule, next to the common ones (identity, hints,
+/// locations): what the tool knows about the host as a whole — defaults, the meaning of
+/// its settings, its precedence. `validate` receives the whole rule.
+pub trait HostExtension: DeserializeOwned + Serialize + Clone + Debug {
+    fn validate<X: Extension>(_rule: &HostRule<X, Self>) -> Result<(), String> {
+        Ok(())
+    }
+}
+
 /// No tool-specific fields: a rule that only says where a host keeps a file.
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
 pub struct NoExt {}
 
 impl Extension for NoExt {}
+impl HostExtension for NoExt {}
 
 /// One file (or glob) where a host keeps something.
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -141,10 +151,11 @@ pub struct NotRead {
     pub reason: String,
 }
 
-/// One `hosts/*.toml` file.
+/// One `hosts/*.toml` file. `X` is the tool's extension of every location, `H` its
+/// extension of the host as a whole (none by default).
 #[derive(Debug, Clone, Deserialize, Serialize)]
-#[serde(bound = "X: Extension")]
-pub struct HostRule<X: Extension> {
+#[serde(bound = "X: Extension, H: HostExtension")]
+pub struct HostRule<X: Extension, H: HostExtension = NoExt> {
     pub id: String,
     pub name: String,
     pub vendor: Option<String>,
@@ -162,9 +173,11 @@ pub struct HostRule<X: Extension> {
     pub locations: Vec<Location<X>>,
     #[serde(default)]
     pub hosts: Vec<NotRead>,
+    #[serde(flatten)]
+    pub ext: H,
 }
 
-impl<X: Extension> HostRule<X> {
+impl<X: Extension, H: HostExtension> HostRule<X, H> {
     pub fn application(&self) -> &str {
         self.application.as_deref().unwrap_or(&self.name)
     }
@@ -188,12 +201,12 @@ pub enum RuleError {
 
 /// A validated set of host rules.
 #[derive(Debug, Clone)]
-pub struct Rules<X: Extension> {
-    pub hosts: Vec<HostRule<X>>,
+pub struct Rules<X: Extension, H: HostExtension = NoExt> {
+    pub hosts: Vec<HostRule<X, H>>,
     pub not_read: Vec<NotRead>,
 }
 
-impl<X: Extension> Rules<X> {
+impl<X: Extension, H: HostExtension> Rules<X, H> {
     /// Parse and validate rule texts, `(file name, text)`. Hosts are sorted by name; an
     /// out-of-scope file feeds `not_read`.
     pub fn load<'a>(
@@ -203,7 +216,7 @@ impl<X: Extension> Rules<X> {
         let mut not_read = Vec::new();
         let mut ids = HashSet::new();
         for (file, text) in files {
-            let rule: HostRule<X> = toml::from_str(text).map_err(|source| RuleError::Parse {
+            let rule: HostRule<X, H> = toml::from_str(text).map_err(|source| RuleError::Parse {
                 file: file.to_string(),
                 source,
             })?;
@@ -224,7 +237,7 @@ impl<X: Extension> Rules<X> {
         Ok(Rules { hosts, not_read })
     }
 
-    pub fn host(&self, id: &str) -> Option<&HostRule<X>> {
+    pub fn host(&self, id: &str) -> Option<&HostRule<X, H>> {
         self.hosts.iter().find(|h| h.id == id)
     }
 
@@ -238,7 +251,10 @@ impl<X: Extension> Rules<X> {
     }
 }
 
-fn validate<X: Extension>(file: &str, rule: &HostRule<X>) -> Result<(), RuleError> {
+fn validate<X: Extension, H: HostExtension>(
+    file: &str,
+    rule: &HostRule<X, H>,
+) -> Result<(), RuleError> {
     let invalid = |message: String| RuleError::Invalid {
         file: file.to_string(),
         message,
@@ -284,6 +300,7 @@ fn validate<X: Extension>(file: &str, rule: &HostRule<X>) -> Result<(), RuleErro
             }
         }
     }
+    H::validate(rule).map_err(invalid)?;
     Ok(())
 }
 
@@ -365,6 +382,44 @@ reason = ""
             }
             Ok(())
         }
+    }
+
+    /// A host-level extension with a required table and its own check.
+    #[derive(Debug, Clone, Deserialize, Serialize)]
+    struct DefaultsExt {
+        defaults: BTreeMap<String, String>,
+    }
+
+    impl HostExtension for DefaultsExt {
+        fn validate<X: Extension>(rule: &HostRule<X, Self>) -> Result<(), String> {
+            if rule.ext.defaults.is_empty() {
+                return Err("defaults must name at least one capability".into());
+            }
+            Ok(())
+        }
+    }
+
+    #[test]
+    fn a_host_extension_is_read_next_to_the_common_fields_and_validated() {
+        let text = MINIMAL.replace(
+            "hints.list = \"x list\"",
+            "hints.list = \"x list\"\n[defaults]\ncommands = \"asks\"",
+        );
+        let rules: Rules<NoExt, DefaultsExt> = Rules::load([("x.toml", text.as_str())]).unwrap();
+        assert_eq!(rules.hosts[0].ext.defaults["commands"], "asks");
+        assert_eq!(rules.hosts[0].hint("list"), Some("x list"));
+        assert_eq!(rules.hosts[0].locations.len(), 1);
+
+        let text = MINIMAL.replace(
+            "hints.list = \"x list\"",
+            "hints.list = \"x list\"\n[defaults]",
+        );
+        let err = Rules::<NoExt, DefaultsExt>::load([("x.toml", text.as_str())]).unwrap_err();
+        assert!(err.to_string().contains("at least one capability"), "{err}");
+
+        // Without the table the rule does not parse: the extension is required.
+        let err = Rules::<NoExt, DefaultsExt>::load([("x.toml", MINIMAL)]).unwrap_err();
+        assert!(matches!(err, RuleError::Parse { .. }), "{err}");
     }
 
     #[test]

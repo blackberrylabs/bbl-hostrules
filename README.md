@@ -37,10 +37,12 @@ quote = "the words the path and key were read from"
 
 ## What the crate does
 
-- `rules` — the rule model, loading and validation. `HostRule<X>` and `Location<X>` are
-  generic over an [`Extension`]: the fields a tool needs in every location (which key holds
-  the MCP servers; which keys hold the permission settings), flattened into the location's
-  table and validated by the tool's own rule.
+- `rules` — the rule model, loading and validation. `Location<X>` is generic over an
+  `Extension`: the fields a tool needs in every location (which key holds the MCP servers),
+  flattened into the location's table and validated by the tool's own rule. `HostRule<X, H>`
+  adds an optional `HostExtension`: what the tool knows about the host as a whole (its
+  defaults, the meaning of its permission settings, its precedence), flattened next to the
+  common fields.
 - `env` — the environment a run is made against: home, OS, variables, `PATH`, project
   roots; path expansion (`~`, `${VAR}`, `%VAR%`, `$VAR`) and `which`. Built from the
   process, or from a fixture so tests are hermetic.
@@ -62,7 +64,7 @@ quote = "the words the path and key were read from"
 
 ```toml
 [dependencies]
-hostrules = { git = "https://github.com/blackberrylabs/hostrules", tag = "v0.1.0" }
+hostrules = { git = "https://github.com/blackberrylabs/hostrules", tag = "v0.2.0" }
 ```
 
 ```rust
@@ -90,7 +92,7 @@ for host in &rules.hosts {
 }
 ```
 
-`#![forbid(unsafe_code)]`. Rust 1.80+. Status: **0.1.0**, used by MCProster 0.2.1. Not on
+`#![forbid(unsafe_code)]`. Rust 1.80+. Status: **0.2.0** (host-level extension, for Permitt); MCProster 0.2.1 uses 0.1.0. Not on
 crates.io yet — it will be once two tools depend on it and the API has held a version.
 
 By [Alexandre Do](https://github.com/blackberrylabs). MIT — see [LICENSE](LICENSE).

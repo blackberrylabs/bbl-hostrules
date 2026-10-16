@@ -3,6 +3,18 @@
 
 ---
 
+## 2026-10-16, 0.2.0 le soir meme
+
+- Permitt (schema des regles D11) a besoin de champs par hote — defauts, sens des reglages,
+  precedence — la ou MCProster n'avait besoin que de champs par emplacement. Deuxieme parametre
+  `H` avec defaut `NoExt` : MCProster compile sans changer une ligne. C'est le premier besoin
+  qu'un seul outil ne montrait pas ; l'API a tenu.
+
+## 2026-10-16, publie
+
+- Commit 1, depot public, tag v0.1.0 le soir meme. MCProster 0.2.1 construit dessus depuis
+  GitHub, passage reel identique. Permitt peut demarrer.
+
 ## 2026-10-16, extraction
 
 - Faite dans la soiree : `rules` (generique `HostRule<X>`, extension flattenee, `NoExt` pour

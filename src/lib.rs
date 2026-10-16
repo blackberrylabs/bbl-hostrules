@@ -8,8 +8,9 @@
 //! refused at load time.
 //!
 //! The crate is shared by the Blackberrylabs tools (MCProster, Permitt). Each tool brings
-//! its own rule files and its own [`rules::Extension`] — the fields a location needs for
-//! that tool's job (which key holds the MCP servers; which keys hold the permission
+//! its own rule files and its own extensions: an [`rules::Extension`] for the fields a
+//! location needs (which key holds the MCP servers) and a [`rules::HostExtension`] for what
+//! the tool knows about the host as a whole (its defaults, the meaning of its permission
 //! settings). This crate owns what they have in common:
 //!
 //! - [`rules`]: the rule model, loading and validation;
@@ -31,4 +32,6 @@ pub mod rules;
 pub mod secrets;
 
 pub use env::{Env, Os};
-pub use rules::{Extension, Format, HostRule, Location, Rules, Scope, Source, SourceKind};
+pub use rules::{
+    Extension, Format, HostExtension, HostRule, Location, NoExt, Rules, Scope, Source, SourceKind,
+};
