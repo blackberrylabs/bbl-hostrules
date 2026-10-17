@@ -60,6 +60,14 @@ quote = "the words the path and key were read from"
    a test checks the source for it.
 2. **No network.** No network dependency, no network code; a test checks that too.
 
+## Part of Blackberrylabs
+
+One of the three shared crates of the [Blackberrylabs](https://github.com/blackberrylabs)
+family — with [`bbl-ui`](https://github.com/blackberrylabs/bbl-ui) (the shared face) and [`bbl-report`](https://github.com/blackberrylabs/bbl-report) (the tower's contract) — behind the control tower and its modules (Cleanator, MCProster,
+Permitt). A new module starts from the [module template](https://github.com/blackberrylabs/template);
+the procedure is [`docs/new-module.md`](https://github.com/blackberrylabs/blackberrylabs/blob/main/docs/new-module.md)
+in the tower.
+
 ## Use
 
 ```toml
