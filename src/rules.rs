@@ -21,7 +21,11 @@ pub enum Scope {
 /// Text format of a file a host reads. The four structured formats become a
 /// `serde_json::Value` tree; `Markdown` is kept as text — a `Value::String` — for the
 /// hosts' instruction files (CLAUDE.md, AGENTS.md, `.cursor/rules/*.mdc`…), which a tool
-/// inspects as prose: lines, bytes, front matter, imports.
+/// inspects as prose: lines, bytes, front matter, imports. `Jsonl` (one JSON document per
+/// line: session logs, rollouts) becomes a `Value::Array` of the lines that parse; `Dotenv`
+/// (`KEY=value` lines: `.env`, `environment.d`, `secrets.env`) becomes a `Value::Object` of
+/// strings; `Sqlite` names a binary database a tool reads with its own driver — `parse`
+/// refuses it, a location may still describe it.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Format {
@@ -30,6 +34,9 @@ pub enum Format {
     Toml,
     Yaml,
     Markdown,
+    Jsonl,
+    Dotenv,
+    Sqlite,
 }
 
 /// How a location was established.
@@ -283,8 +290,12 @@ fn validate<X: Extension, H: HostExtension>(
             }
         }
         Status::Active => {
-            if rule.locations.is_empty() {
-                return Err(invalid("an active host needs at least one location".into()));
+            // a host with no readable file at all (its state lives on a server or in the
+            // keyring) may still be described, as long as it points at its documentation
+            if rule.locations.is_empty() && rule.references.is_empty() {
+                return Err(invalid(
+                    "an active host needs at least one location, or a reference when it keeps no readable file".into(),
+                ));
             }
             for (i, loc) in rule.locations.iter().enumerate() {
                 if loc.path.is_empty() {

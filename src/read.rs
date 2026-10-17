@@ -1,6 +1,8 @@
 //! Readers: JSON, JSONC (comments and trailing commas), TOML and YAML, all turned into one
-//! `serde_json::Value` tree — and Markdown, kept as one string; and `dig`, a dotted-path lookup with `*` wildcards that
-//! reports the actual key matched by each `*`.
+//! `serde_json::Value` tree — Markdown, kept as one string; JSONL, an array of the lines
+//! that parse; dotenv, an object of strings; SQLite, refused here (a tool brings its own
+//! driver); and `dig`, a dotted-path lookup with `*` wildcards that reports the actual key
+//! matched by each `*`.
 
 use std::path::Path;
 
@@ -44,7 +46,62 @@ pub fn parse(text: &str, format: Format) -> Result<Value, ReadError> {
                 .map_err(|e| ReadError::Other(format!("YAML with non-string keys: {e}")))
         }
         Format::Markdown => Ok(Value::String(text.to_string())),
+        Format::Jsonl => Ok(Value::Array(
+            text.lines()
+                .filter(|l| !l.trim().is_empty())
+                .filter_map(|l| serde_json::from_str(l).ok())
+                .collect(),
+        )),
+        Format::Dotenv => Ok(parse_dotenv(text)),
+        Format::Sqlite => Err(ReadError::Other(
+            "a SQLite database is binary: read it with a database driver, not as text".into(),
+        )),
     }
+}
+
+/// `KEY=value` lines as a `Value::Object` of strings: an optional `export ` prefix, `#`
+/// comments, blank lines, single or double quotes stripped, and the first assignment of a
+/// name wins (dotenv's rule). Nothing is expanded: `$OTHER` stays as written, so a reference
+/// is still recognisable as one.
+pub fn parse_dotenv(text: &str) -> Value {
+    let mut map = serde_json::Map::new();
+    for raw in text.lines() {
+        let line = raw.trim();
+        if line.is_empty() || line.starts_with('#') {
+            continue;
+        }
+        let line = line
+            .strip_prefix("export ")
+            .map(str::trim_start)
+            .unwrap_or(line);
+        let Some((k, v)) = line.split_once('=') else {
+            continue;
+        };
+        let k = k.trim();
+        if k.is_empty()
+            || !k
+                .chars()
+                .all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '.')
+        {
+            continue;
+        }
+        let mut v = v.trim();
+        match v.chars().next() {
+            Some(q @ ('"' | '\'')) => {
+                if let Some(end) = v[1..].find(q) {
+                    v = &v[1..1 + end];
+                }
+            }
+            _ => {
+                if let Some(i) = v.find(" #") {
+                    v = v[..i].trim_end();
+                }
+            }
+        }
+        map.entry(k.to_string())
+            .or_insert_with(|| Value::String(v.to_string()));
+    }
+    Value::Object(map)
 }
 
 /// Remove `//` and `/* */` comments outside strings, then trailing commas before `}` / `]`.
@@ -230,6 +287,33 @@ mod tests {
     fn yaml_list_becomes_array() {
         let v = parse("mcpServers:\n  - name: a\n    command: x\n", Format::Yaml).unwrap();
         assert_eq!(v["mcpServers"][0]["name"], "a");
+    }
+
+    #[test]
+    fn jsonl_keeps_the_lines_that_parse() {
+        let v = parse("{\"a\":1}\nnot json\n\n{\"a\":2}\n", Format::Jsonl).unwrap();
+        assert_eq!(v.as_array().unwrap().len(), 2);
+        assert_eq!(v[1]["a"], 2);
+    }
+
+    #[test]
+    fn dotenv_rules() {
+        let v = parse(
+            "# c\nexport A=1\nB=\"two words\" # not a comment inside quotes\nC='x'\nD=raw # comment\nA=9\nE=$A\nbad line\n",
+            Format::Dotenv,
+        )
+        .unwrap();
+        assert_eq!(v["A"], "1");
+        assert_eq!(v["B"], "two words");
+        assert_eq!(v["C"], "x");
+        assert_eq!(v["D"], "raw");
+        assert_eq!(v["E"], "$A");
+        assert!(v.get("bad line").is_none());
+    }
+
+    #[test]
+    fn sqlite_is_refused_as_text() {
+        assert!(parse("", Format::Sqlite).is_err());
     }
 
     #[test]

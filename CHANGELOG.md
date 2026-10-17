@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.5.0] — 2026-10-17
+
+### Added
+
+- `Format::Jsonl`, `Format::Dotenv`, `Format::Sqlite`. JSONL (one JSON document per line —
+  the hosts' session logs and rollouts) parses to a `Value::Array` of the lines that parse;
+  dotenv (`KEY=value` lines — `.env`, `environment.d`, `secrets.env`) to a `Value::Object`
+  of strings with dotenv's rules (first assignment wins, quotes stripped, nothing expanded);
+  SQLite is refused by `parse` (a tool reads it with its own driver) but can be described by
+  a location. For Billfold, the module that reads the hosts' credential files and usage logs.
+  Existing formats are unchanged.
+
+### Changed
+
+- An active host may have no location when it carries at least one `references` URL: a
+  host whose state lives on a server or in the keyring (Trae, JetBrains AI) can be
+  described and detected without a readable file. A host with neither is still refused.
+
 ## [0.4.0] — 2026-10-17
 
 ### Added

@@ -5,9 +5,7 @@ writing — with the source of every claim.**
 
 `bbl-hostrules` is the Rust crate shared by the [Blackberrylabs](https://github.com/blackberrylabs)
 tools — [MCProster](https://github.com/blackberrylabs/mcproster) (inventory of MCP
-servers), [Permitt](https://github.com/blackberrylabs/permitt) (inventory of agent
-permissions) and [Linstruct](https://github.com/blackberrylabs/linstruct) (the hosts'
-instruction files, read as Markdown since 0.4.0). Each tool ships its own rule files;
+servers) and Permitt (inventory of agent permissions). Each tool ships its own rule files;
 this crate owns what they have in common.
 
 A **host rule** is a TOML file: the host's identity, the locations of its files per
@@ -51,7 +49,8 @@ quote = "the words the path and key were read from"
 - `resolve` — a location → the concrete files it designates on this machine: per-OS paths,
   per-project paths under every root, globs, the projects Claude Code knows.
 - `read` — JSON, JSONC, TOML and YAML → `serde_json::Value`, Markdown kept as text (for
-  the hosts' instruction files); key paths (`a.b.*.c`, `\.`
+  the hosts' instruction files), JSONL as an array of its lines, dotenv as an object of
+  strings, SQLite described but read by the tool's own driver; key paths (`a.b.*.c`, `\.`
   for a literal dot); the line a key sits on.
 - `secrets` — classify a value the moment it is read: a *reference* the host expands
   itself (`${VAR}`, `${env:NAME}`, `${{ secrets.X }}`) is shown as written; a credential
@@ -67,7 +66,7 @@ quote = "the words the path and key were read from"
 
 One of the three shared crates of the [Blackberrylabs](https://github.com/blackberrylabs)
 family — with [`bbl-ui`](https://github.com/blackberrylabs/bbl-ui) (the shared face) and [`bbl-report`](https://github.com/blackberrylabs/bbl-report) (the tower's contract) — behind the control tower and its modules (Cleanator, MCProster,
-Permitt, Linstruct). A new module starts from the [module template](https://github.com/blackberrylabs/template);
+Permitt). A new module starts from the [module template](https://github.com/blackberrylabs/template);
 the procedure is [`docs/new-module.md`](https://github.com/blackberrylabs/blackberrylabs/blob/main/docs/new-module.md)
 in the tower.
 
