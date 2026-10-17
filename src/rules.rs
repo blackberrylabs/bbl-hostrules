@@ -18,7 +18,10 @@ pub enum Scope {
     System,
 }
 
-/// Text format of a configuration file.
+/// Text format of a file a host reads. The four structured formats become a
+/// `serde_json::Value` tree; `Markdown` is kept as text — a `Value::String` — for the
+/// hosts' instruction files (CLAUDE.md, AGENTS.md, `.cursor/rules/*.mdc`…), which a tool
+/// inspects as prose: lines, bytes, front matter, imports.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Format {
@@ -26,6 +29,7 @@ pub enum Format {
     Jsonc,
     Toml,
     Yaml,
+    Markdown,
 }
 
 /// How a location was established.

@@ -1,5 +1,5 @@
 //! Readers: JSON, JSONC (comments and trailing commas), TOML and YAML, all turned into one
-//! `serde_json::Value` tree; and `dig`, a dotted-path lookup with `*` wildcards that
+//! `serde_json::Value` tree — and Markdown, kept as one string; and `dig`, a dotted-path lookup with `*` wildcards that
 //! reports the actual key matched by each `*`.
 
 use std::path::Path;
@@ -43,6 +43,7 @@ pub fn parse(text: &str, format: Format) -> Result<Value, ReadError> {
             serde_json::to_value(v)
                 .map_err(|e| ReadError::Other(format!("YAML with non-string keys: {e}")))
         }
+        Format::Markdown => Ok(Value::String(text.to_string())),
     }
 }
 
@@ -229,6 +230,13 @@ mod tests {
     fn yaml_list_becomes_array() {
         let v = parse("mcpServers:\n  - name: a\n    command: x\n", Format::Yaml).unwrap();
         assert_eq!(v["mcpServers"][0]["name"], "a");
+    }
+
+    #[test]
+    fn markdown_is_kept_as_text() {
+        let t = "---\npaths: [\"src/**\"]\n---\n# Rules\n@docs/style.md\n";
+        let v = parse(t, Format::Markdown).unwrap();
+        assert_eq!(v.as_str(), Some(t));
     }
 
     #[test]

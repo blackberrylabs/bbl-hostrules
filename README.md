@@ -48,7 +48,8 @@ quote = "the words the path and key were read from"
   process, or from a fixture so tests are hermetic.
 - `resolve` — a location → the concrete files it designates on this machine: per-OS paths,
   per-project paths under every root, globs, the projects Claude Code knows.
-- `read` — JSON, JSONC, TOML and YAML → `serde_json::Value`; key paths (`a.b.*.c`, `\.`
+- `read` — JSON, JSONC, TOML and YAML → `serde_json::Value`, Markdown kept as text (for
+  the hosts' instruction files); key paths (`a.b.*.c`, `\.`
   for a literal dot); the line a key sits on.
 - `secrets` — classify a value the moment it is read: a *reference* the host expands
   itself (`${VAR}`, `${env:NAME}`, `${{ secrets.X }}`) is shown as written; a credential

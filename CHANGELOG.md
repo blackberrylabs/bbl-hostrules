@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.4.0] — 2026-10-17
+
+### Added
+
+- `Format::Markdown`: a location that is prose, not a tree. `read_tree` / `parse` return
+  the text as a `serde_json::Value::String`, so a tool can inspect it as lines, bytes, front
+  matter and imports. For Linstruct, the linter of the hosts' instruction files
+  (`CLAUDE.md`, `AGENTS.md`, `.cursor/rules/*.mdc`…). Existing formats are unchanged.
+
 ## [0.3.0] — 2026-10-16
 
 ### Changed
