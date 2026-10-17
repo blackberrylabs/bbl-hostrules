@@ -5,7 +5,9 @@ writing — with the source of every claim.**
 
 `bbl-hostrules` is the Rust crate shared by the [Blackberrylabs](https://github.com/blackberrylabs)
 tools — [MCProster](https://github.com/blackberrylabs/mcproster) (inventory of MCP
-servers) and Permitt (inventory of agent permissions). Each tool ships its own rule files;
+servers), [Permitt](https://github.com/blackberrylabs/permitt) (inventory of agent
+permissions) and [Linstruct](https://github.com/blackberrylabs/linstruct) (the hosts'
+instruction files, read as Markdown since 0.4.0). Each tool ships its own rule files;
 this crate owns what they have in common.
 
 A **host rule** is a TOML file: the host's identity, the locations of its files per
@@ -65,7 +67,7 @@ quote = "the words the path and key were read from"
 
 One of the three shared crates of the [Blackberrylabs](https://github.com/blackberrylabs)
 family — with [`bbl-ui`](https://github.com/blackberrylabs/bbl-ui) (the shared face) and [`bbl-report`](https://github.com/blackberrylabs/bbl-report) (the tower's contract) — behind the control tower and its modules (Cleanator, MCProster,
-Permitt). A new module starts from the [module template](https://github.com/blackberrylabs/template);
+Permitt, Linstruct). A new module starts from the [module template](https://github.com/blackberrylabs/template);
 the procedure is [`docs/new-module.md`](https://github.com/blackberrylabs/blackberrylabs/blob/main/docs/new-module.md)
 in the tower.
 
