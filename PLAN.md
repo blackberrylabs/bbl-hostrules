@@ -23,5 +23,10 @@
 
 ## Etape 6. Renommage `bbl-hostrules` (decision H4, 2026-10-16)
 - [x] Dossier local renomme `Bbl_hostrules` — 2026-10-16
-- [ ] Depot GitHub renomme, remote mis a jour, commit 0.3.0, tag v0.3.0
-- [ ] Permitt et MCProster sur `bbl-hostrules` v0.3.0, sorties identiques
+- [x] Depot GitHub renomme, remote mis a jour, commit 0.3.0, tag v0.3.0 (remote `blackberrylabs/bbl-hostrules`, tag v0.3.0 present) — 2026-10-26
+- [x] Permitt et MCProster sur `bbl-hostrules` v0.3.0, sorties identiques (tag dans leur `Cargo.toml`) — 2026-10-26
+
+## Etape 7. Versions 0.4.0 et 0.5.0 (relevees le 2026-10-26)
+- [x] 0.4.0 : `Format::Markdown`, pour Linstruct — 2026-10-17 (CHANGELOG, tag v0.4.0)
+- [x] 0.5.0 : `Format::Jsonl`, `Format::Dotenv`, `Format::Sqlite` (decrit, jamais lu), hote sans emplacement s'il porte une URL de reference, pour Billfold — 2026-10-17 (CHANGELOG, tag v0.5.0)
+- [ ] Etape 5 (crates.io) : toujours a decider par Alexandre
